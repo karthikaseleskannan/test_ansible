@@ -1,0 +1,171 @@
+apiVersion: core.gardener.cloud/v1beta1
+kind: Shoot
+metadata:
+  annotations:
+    gardener.cloud/created-by: system:serviceaccount:garden-sap-cic-tf:deploy-user
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"core.gardener.cloud/v1beta1","kind":"Shoot","metadata":{"annotations":{},"name":"sapcic-core","namespace":"garden-sap-cic-tf"},"spec":{"addons":{"kubernetesDashboard":{"enabled":false},"nginxIngress":{"enabled":false}},"cloudProfileName":"az","hibernation":{"schedules":[]},"kubernetes":{"version":"1.20.9"},"maintenance":{"autoUpdate":{"kubernetesVersion":true,"machineImageVersion":true},"timeWindow":{"begin":"220000-0400","end":"230000-0400"}},"networking":{"nodes":"10.250.0.0/16","type":"calico"},"provider":{"controlPlaneConfig":{"apiVersion":"azure.provider.extensions.gardener.cloud/v1alpha1","kind":"ControlPlaneConfig"},"infrastructureConfig":{"apiVersion":"azure.provider.extensions.gardener.cloud/v1alpha1","kind":"InfrastructureConfig","networks":{"vnet":{"cidr":"10.250.0.0/16"},"workers":"10.250.0.0/16"},"zoned":true},"type":"azure","workers":[{"cri":{"name":"containerd"},"machine":{"image":{"name":"gardenlinux","version":"318.8.0"},"type":"Standard_A4_v2"},"maxSurge":1,"maximum":2,"minimum":1,"name":"sapcic-core-wrk","volume":{"size":"50Gi","type":"Standard_LRS"},"zones":["2"]}]},"purpose":"production","region":"eastus","secretBindingName":"azure-terraform-secret"}}
+  creationTimestamp: "2021-08-02T20:47:19Z"
+  finalizers:
+  - gardener
+  generation: 45
+  labels:
+    shoot.gardener.cloud/status: healthy
+  name: sapcic-core
+  namespace: garden-sap-cic-tf
+  resourceVersion: "2947587303"
+  uid: 17d14bbc-da31-4f86-8e96-c38ca7f9cf71
+spec:
+  addons:
+    kubernetesDashboard:
+      authenticationMode: token
+      enabled: false
+    nginxIngress:
+      enabled: false
+      externalTrafficPolicy: Cluster
+  cloudProfileName: az
+  dns:
+    domain: sapcic-core.sap-cic-tf.shoot.canary.k8s-hana.ondemand.com
+  hibernation: {}
+  kubernetes:
+    allowPrivilegedContainers: true
+    kubeAPIServer:
+      enableAnonymousAuthentication: false
+      enableBasicAuthentication: false
+      requests:
+        maxMutatingInflight: 200
+        maxNonMutatingInflight: 400
+    kubeControllerManager:
+      nodeCIDRMaskSize: 24
+      nodeMonitorGracePeriod: 2m0s
+      podEvictionTimeout: 2m0s
+    kubeProxy:
+      enabled: true
+      mode: IPTables
+    kubelet:
+      failSwapOn: true
+      imageGCHighThresholdPercent: 50
+      imageGCLowThresholdPercent: 40
+      kubeReserved:
+        cpu: 80m
+        memory: 1Gi
+        pid: 20k
+    version: 1.20.9
+    verticalPodAutoscaler:
+      enabled: true
+      evictAfterOOMThreshold: 10m0s
+      evictionRateBurst: 1
+      evictionRateLimit: -1
+      evictionTolerance: 0.5
+      recommendationMarginFraction: 0.15
+      recommenderInterval: 1m0s
+      updaterInterval: 1m0s
+  maintenance:
+    autoUpdate:
+      kubernetesVersion: true
+      machineImageVersion: true
+    timeWindow:
+      begin: 220000-0400
+      end: 230000-0400
+  networking:
+    nodes: 10.250.0.0/16
+    pods: 100.96.0.0/11
+    services: 100.64.0.0/13
+    type: calico
+  provider:
+    controlPlaneConfig:
+      apiVersion: azure.provider.extensions.gardener.cloud/v1alpha1
+      kind: ControlPlaneConfig
+    infrastructureConfig:
+      apiVersion: azure.provider.extensions.gardener.cloud/v1alpha1
+      kind: InfrastructureConfig
+      networks:
+        vnet:
+          cidr: 10.250.0.0/16
+        workers: 10.250.0.0/16
+      zoned: true
+    type: azure
+    workers:
+    - cri:
+        name: containerd
+      machine:
+        image:
+          name: gardenlinux
+          version: 318.8.0
+        type: Standard_A4_v2
+      maxSurge: 1
+      maxUnavailable: 0
+      maximum: 2
+      minimum: 1
+      name: sapcic-core-wrk
+      systemComponents:
+        allow: true
+      volume:
+        size: 50Gi
+        type: Standard_LRS
+      zones:
+      - "2"
+  purpose: production
+  region: eastus
+  secretBindingName: azure-terraform-secret
+  seedName: az-us2
+status:
+  advertisedAddresses:
+  - name: external
+    url: https://api.sapcic-core.sap-cic-tf.shoot.canary.k8s-hana.ondemand.com
+  - name: internal
+    url: https://api.sapcic-core.sap-cic-tf.internal.canary.k8s.ondemand.com
+  clusterIdentity: shoot--sap-cic-tf--sapcic-core-17d14bbc-da31-4f86-8e96-c38ca7f9cf71-sap-landscape-canary
+  conditions:
+  - lastTransitionTime: "2021-08-23T02:23:45Z"
+    lastUpdateTime: "2021-08-23T02:23:43Z"
+    message: API server /healthz endpoint responded with success status code.
+    reason: HealthzRequestSucceeded
+    status: "True"
+    type: APIServerAvailable
+  - lastTransitionTime: "2021-08-23T02:34:09Z"
+    lastUpdateTime: "2021-08-23T02:34:09Z"
+    message: All control plane components are healthy.
+    reason: ControlPlaneRunning
+    status: "True"
+    type: ControlPlaneHealthy
+  - lastTransitionTime: "2021-08-23T02:23:45Z"
+    lastUpdateTime: "2021-08-23T02:23:43Z"
+    message: All nodes are ready.
+    reason: EveryNodeReady
+    status: "True"
+    type: EveryNodeReady
+  - lastTransitionTime: "2021-08-23T02:23:45Z"
+    lastUpdateTime: "2021-08-23T02:23:43Z"
+    message: All system components are healthy.
+    reason: SystemComponentsRunning
+    status: "True"
+    type: SystemComponentsHealthy
+  constraints:
+  - lastTransitionTime: "2021-08-23T02:23:44Z"
+    lastUpdateTime: "2021-08-08T22:05:55Z"
+    message: All webhooks are properly configured.
+    reason: NoProblematicWebhooks
+    status: "True"
+    type: HibernationPossible
+  - lastTransitionTime: "2021-08-23T02:23:44Z"
+    lastUpdateTime: "2021-08-08T22:05:55Z"
+    message: All webhooks are properly configured.
+    reason: NoProblematicWebhooks
+    status: "True"
+    type: MaintenancePreconditionsSatisfied
+  gardener:
+    id: 07ec90b040b6580c3e5f62c0afc8d3edb3868a87408a8efd7877acd365d71ce5
+    name: gardenlet-b8744f478-kdgv7
+    version: v1.29.0
+  hibernated: false
+  lastOperation:
+    description: Shoot cluster state has been successfully reconciled.
+    lastUpdateTime: "2021-08-23T02:23:43Z"
+    progress: 100
+    state: Succeeded
+    type: Reconcile
+  observedGeneration: 45
+  seedName: az-us2
+  technicalID: shoot--sap-cic-tf--sapcic-core
+  uid: 17d14bbc-da31-4f86-8e96-c38ca7f9cf71

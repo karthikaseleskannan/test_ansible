@@ -1,0 +1,51 @@
+---
+- hosts: localhost
+
+  tasks:
+
+  - name: Get the shoot file
+    shell: |
+      export KUBECONFIG=kubeconfig.yaml
+      kubectl get shoots  sapcic-core -o yaml
+    register: shoot
+      
+  - name: write shoot file to an output file                                                                              
+    copy:                                                                                              
+      content: "{{shoot.stdout}}" 
+      dest: "output/shoot_complete.yaml"
+
+  - name: Get kubeconfig file and write it to an output file
+    shell: |
+      export KUBECONFIG=kubeconfig.yaml
+      kubectl get secrets sapcic-core.kubeconfig -o jsonpath="{.data.kubeconfig}"| base64 -d > output/kube.yaml
+
+  - name: execute python script to extract values
+    script: extract.py
+    register: extract
+
+  - name: write python output to a file                                                                              
+    copy:                                                                                              
+      content: "{{extract.stdout}}" 
+      dest: "output/testrepo1/core/dev/shoot.yaml"
+
+  - name: Encrypt the kubeconfig file
+    script: encrypt.py
+
+  - name: Git clone
+    shell: |
+      ccd output/testrepo
+      git init
+      git config --global user.name karthikaseleskannan
+      git config --global user.email karthikaseles@gmail.com
+      git config --global user.password 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
+      git config credential.helper '!f() { printf "%s\n" "username=karthikaseleskannan" "password=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"; };f'
+      git clone http://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@github.com/karthikaseleskannan/test_ansible.git
+      git checkout -b test
+      cd test_ansible
+      mkdir -p core/dev
+      cd ..
+      cp output/shoot.yaml ansible/core/dev
+      cp output/kubeconfig.yaml ansible/core/dev
+      git add .
+      git commit -m "updated from script"
+      git push http://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@github.com/karthikaseleskannan/test_ansible.git test
